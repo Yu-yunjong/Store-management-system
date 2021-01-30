@@ -12,21 +12,21 @@ public class ServerMain extends JFrame {
 	
 	public ServerMain() {
 		//******** setting
-		// Ã¢ ÀÌ¸§
-		super("PC¹æ °ü¸® ÇÁ·Î±×·¥(¼­¹ö)");
-		// Ã¢ Å©±â(³Êºñ, ³ôÀÌ)
+		// ì°½ ì´ë¦„
+		super("PCë°© ê´€ë¦¬ í”„ë¡œê·¸ë¨(ì„œë²„)");
+		// ì°½ í¬ê¸°(ë„ˆë¹„, ë†’ì´)
 		setSize(1500, 1000);
-		// Ã¢ º¸ÀÌ±â
+		// ì°½ ë³´ì´ê¸°
 		setVisible(true);
-		// Ã¢ÀÌ ¶ã À§Ä¡ °áÁ¤(°¡·Î, ¼¼·Î)
+		// ì°½ì´ ëœ° ìœ„ì¹˜ ê²°ì •(ê°€ë¡œ, ì„¸ë¡œ)
 		//setLocation(500, 300);
-		// Ã¢ Å©±â °íÁ¤
+		// ì°½ í¬ê¸° ê³ ì •
 		setResizable(false);
-		// Á¾·á ÀÌº¥Æ®(Á¾·á ½Ã ¸Ş¸ğ¸®¿¡¼­µµ »ç¶óÁöµµ·Ï)
+		// ì¢…ë£Œ ì´ë²¤íŠ¸(ì¢…ë£Œ ì‹œ ë©”ëª¨ë¦¬ì—ì„œë„ ì‚¬ë¼ì§€ë„ë¡)
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// panel
-		// 1: ¸ŞÀÎ, 2: »óÇ° °ü¸®, 3: È¸¿ø °ü¸®, 4: ¹ÌÃâ °ü¸®, 5: PC »óÅÂ
+		// 1: ë©”ì¸, 2: ìƒí’ˆ ê´€ë¦¬, 3: íšŒì› ê´€ë¦¬, 4: ë¯¸ì¶œ ê´€ë¦¬, 5: PC ìƒíƒœ
 		JPanel panel1 = new JPanel();
 		mainPanel(panel1);
 		
@@ -52,36 +52,36 @@ public class ServerMain extends JFrame {
 		// Tab
 		JTabbedPane tab = new JTabbedPane();
 		tab.setBounds(50, 50, 200, 200);
-		tab.add("¸ŞÀÎ", panel1);
-		tab.add("»óÇ° °ü¸®", panel2);
-		tab.add("È¸¿ø °ü¸®", panel3);
-		tab.add("¸ÅÃâ °ü¸®", panel4);
-		tab.add("PC »óÅÂ", panel5);
+		tab.add("ë©”ì¸", panel1);
+		tab.add("ìƒí’ˆ ê´€ë¦¬", panel2);
+		tab.add("íšŒì› ê´€ë¦¬", panel3);
+		tab.add("ë§¤ì¶œ ê´€ë¦¬", panel4);
+		tab.add("PC ìƒíƒœ", panel5);
 		add(tab);
 		
 		
 	}
-	// ¸ŞÀÎ
+	// ë©”ì¸
 	public void mainPanel(JPanel p) {
 		
 	}
 	
-	// »óÇ° °ü¸®
+	// ìƒí’ˆ ê´€ë¦¬
 	public void productPanel(JPanel p) {
 		
 	}
 	
-	// È¸¿ø °ü¸®
+	// íšŒì› ê´€ë¦¬
 	public void memberPanel(JPanel p) {
 		
 	}
 	
-	// ¸ÅÃâ °ü¸®
+	// ë§¤ì¶œ ê´€ë¦¬
 	public void salesPanel(JPanel p) {
 		
 	}
 	
-	// PC »óÅÂ
+	// PC ìƒíƒœ
 	public void pcPanel(JPanel p) {
 		
 	}

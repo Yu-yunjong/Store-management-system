@@ -11,17 +11,17 @@ public class DBConnect extends JFrame {
 	
 	public DBConnect() {
 		//******** setting
-		// Ã¢ ÀÌ¸§
-		super("DB ¿¬°á");		// setTitle("DB ¿¬°á");
-		// Ã¢ Å©±â(³Êºñ, ³ôÀÌ)
+		// ì°½ ì´ë¦„
+		super("DB ì—°ê²°");		// setTitle("DB ì—°ê²°");
+		// ì°½ í¬ê¸°(ë„ˆë¹„, ë†’ì´)
 		setSize(300, 400);
-		// Ã¢ º¸ÀÌ±â
+		// ì°½ ë³´ì´ê¸°
 		setVisible(true);
-		// Ã¢ÀÌ ¶ã À§Ä¡ °áÁ¤(°¡·Î, ¼¼·Î)
+		// ì°½ì´ ëœ° ìœ„ì¹˜ ê²°ì •(ê°€ë¡œ, ì„¸ë¡œ)
 		setLocation(500, 300);
-		// Ã¢ Å©±â °íÁ¤
+		// ì°½ í¬ê¸° ê³ ì •
 		setResizable(false);
-		// Á¾·á ÀÌº¥Æ®(Á¾·á ½Ã ¸Ş¸ğ¸®¿¡¼­µµ »ç¶óÁöµµ·Ï)
+		// ì¢…ë£Œ ì´ë²¤íŠ¸(ì¢…ë£Œ ì‹œ ë©”ëª¨ë¦¬ì—ì„œë„ ì‚¬ë¼ì§€ë„ë¡)
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// panel
@@ -34,14 +34,14 @@ public class DBConnect extends JFrame {
 	}
 	
 	public void dbConnectPanel(JPanel p) {
-		p.setLayout(null);	// ¹èÄ¡°ü¸®ÀÚ ¾øÀÌ Á÷Á¢ ¹èÄ¡
+		p.setLayout(null);	// ë°°ì¹˜ê´€ë¦¬ì ì—†ì´ ì§ì ‘ ë°°ì¹˜
 		
 		// Label
-		JLabel idLabel = new JLabel("¾ÆÀÌµğ");
+		JLabel idLabel = new JLabel("ì•„ì´ë””");
 		idLabel.setBounds(20, 20, 80, 25);
 		p.add(idLabel);
 		
-		JLabel pwLabel = new JLabel("ºñ¹Ğ¹øÈ£");
+		JLabel pwLabel = new JLabel("ë¹„ë°€ë²ˆí˜¸");
 		pwLabel.setBounds(20, 50, 80, 25);
 		p.add(pwLabel);
 		
@@ -49,7 +49,7 @@ public class DBConnect extends JFrame {
 		ipLabel.setBounds(20, 80, 80, 25);
 		p.add(ipLabel);
 		
-		JLabel portLabel = new JLabel("Æ÷Æ®");
+		JLabel portLabel = new JLabel("í¬íŠ¸");
 		portLabel.setBounds(20, 110, 80, 25);
 		p.add(portLabel);
 		
@@ -71,11 +71,11 @@ public class DBConnect extends JFrame {
 		p.add(portNumText);
 		
 		// button
-		btnConnect = new JButton("¿¬°á");
+		btnConnect = new JButton("ì—°ê²°");
 		btnConnect.setBounds(40, 150, 200, 25);
 		p.add(btnConnect);
 		
-		// test°ª
+		// testê°’
 		idText.setText("root");
 		pwText.setText("");
 		ipAddrText.setText("localhost");
