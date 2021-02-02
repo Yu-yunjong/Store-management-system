@@ -1,13 +1,18 @@
 package Server;
 
 import javax.swing.*;
+import java.sql.*;
 
 
 @SuppressWarnings("serial")
 public class DBConnect extends JFrame {
+	// JDBC 드라이버
+	private final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+	
 	private JButton btnConnect;
 	private JPasswordField pwText;
-	private JTextField idText, ipAddrText, portNumText;
+	private JTextField idText, ipAddrText, portNumText, dbNameText;
+	
 	
 	public DBConnect() {
 		//******** setting
@@ -53,6 +58,10 @@ public class DBConnect extends JFrame {
 		portLabel.setBounds(20, 110, 80, 25);
 		p.add(portLabel);
 		
+		JLabel dbNameLabel = new JLabel("DB명");
+		dbNameLabel.setBounds(20, 140, 80, 25);
+		p.add(dbNameLabel);
+		
 		// textField
 		idText = new JTextField(20);
 		idText.setBounds(100, 20, 160, 25);
@@ -70,15 +79,37 @@ public class DBConnect extends JFrame {
 		portNumText.setBounds(100, 110, 160, 25);
 		p.add(portNumText);
 		
+		dbNameText = new JTextField(20);
+		dbNameText.setBounds(100, 140, 160, 25);
+		p.add(dbNameText);
+		
 		// button
 		btnConnect = new JButton("연결");
-		btnConnect.setBounds(40, 150, 200, 25);
+		btnConnect.setBounds(40, 180, 200, 25);
 		p.add(btnConnect);
+		btnConnect.addActionListener(event -> {
+			try {
+				// DB 접속주소
+				String DB_URL = "jdbc:mysql://" + ipAddrText.getText() + ":" + portNumText.getText() + "/" + dbNameText.getText() + "?useSSL=false";
+				System.out.println(DB_URL);	// test
+				
+				// JDBC 드라이버 로딩
+				Class.forName(JDBC_DRIVER);
+				
+				// MySQL 서버 연결
+				DriverManager.getConnection(DB_URL, idText.getText(), "toor");
+				
+			} catch (Exception e) {
+				System.out.println("DB 연결 오류!");
+			}
+
+		});
 		
 		// test값
 		idText.setText("root");
 		pwText.setText("");
 		ipAddrText.setText("localhost");
 		portNumText.setText("3306");
+		dbNameText.setText("pcroom_db");
 	}
 }

@@ -26,7 +26,7 @@ public class ServerMain extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// panel
-		// 1: 메인, 2: 상품 관리, 3: 회원 관리, 4: 미출 관리, 5: PC 상태
+		// 1: 메인, 2: 상품 관리, 3: 회원 관리, 4: 매출 관리, 5: PC 상태
 		JPanel panel1 = new JPanel();
 		mainPanel(panel1);
 		
