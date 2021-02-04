@@ -12,7 +12,7 @@ public class DBConnect extends JFrame {
 	private JButton btnConnect;
 	private JPasswordField pwText;
 	private JTextField idText, ipAddrText, portNumText, dbNameText;
-	
+	Connection conn = null;	// connection 객체
 	
 	public DBConnect() {
 		//******** setting
@@ -40,6 +40,7 @@ public class DBConnect extends JFrame {
 	
 	public void dbConnectPanel(JPanel p) {
 		p.setLayout(null);	// 배치관리자 없이 직접 배치
+		
 		
 		// Label
 		JLabel idLabel = new JLabel("아이디");
@@ -88,10 +89,11 @@ public class DBConnect extends JFrame {
 		btnConnect.setBounds(40, 180, 200, 25);
 		p.add(btnConnect);
 		btnConnect.addActionListener(event -> {
-			DBConnecting();
+			conn = DBConnecting();
+			//SQLExecute s = new SQLExecute(conn);
 		});
 		
-		// test값
+		// 디폴트 값
 		idText.setText("root");
 		pwText.setText("");
 		ipAddrText.setText("localhost");
@@ -101,65 +103,24 @@ public class DBConnect extends JFrame {
 	
 	public Connection DBConnecting() {
 		Connection con = null;	// DB와 연결을 위한 객체
-		Statement st = null;	// SQL문을 DB 서버로 보내기 위한 객체
-		ResultSet rs = null;	// SQL 질의에 의해 생성된 테이블을 저장하는 객체
 		String pwStr = new String(pwText.getPassword());	// getPassword()를 통해 얻은 값은 char[] 형태이므로 String으로 변환
-		
-		String SQL = "SELECT * FROM 회원";
 		
 		try {
 			// 1) DB 접속주소
 			String DB_URL = "jdbc:mysql://" + ipAddrText.getText() + ":" + portNumText.getText() + "/" + dbNameText.getText() + "?useSSL=false";
-			System.out.println(DB_URL);	// test
+			//System.out.println(DB_URL);	// test
 			
 			// 2) JDBC 드라이버 로딩
 			Class.forName(JDBC_DRIVER);
 			
 			// 3) MySQL 서버 연결(connection 객체 생성)
 			con = DriverManager.getConnection(DB_URL, idText.getText(), pwStr);
-			
-			// 4) Statement 객체 생성
-			st = con.createStatement();
-			
-			// 5) Test SQL 문장 실행 후 결과 리턴
-			rs = st.executeQuery(SQL);
-			
-			// 6) ResultSet에 저장된 데이터 얻어오기
-			while(rs.next()) {
-				String id = rs.getString("아이디");
-				
-				System.out.println(id);
-			}
+			System.out.println("DB 연결 성공!");
 			
 		} catch (ClassNotFoundException e){
 			System.out.println("JDBC 드라이버 오류!");
 		} catch (SQLException e) {
 			System.out.println("DB 연결 오류!");
-		} finally {
-			// 사용순서와 반대로 close
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch(SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if(st != null) {
-				try {
-					st.close();
-				} catch(SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			
-//			if(con != null) {
-//				try {
-//					con.close();
-//				} catch(SQLException e) {
-//					e.printStackTrace();
-//				}
-//			}
 		}
 		return con;
 	}

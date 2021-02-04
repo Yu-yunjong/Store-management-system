@@ -1,13 +1,15 @@
 package Server;
 
 import javax.swing.*;
+import javax.swing.event.*;
 
 
 @SuppressWarnings("serial")
 public class ServerMain extends JFrame {
 	public static void main(String[] args) {
-		DBConnect db = new DBConnect();
-		//ServerMain main = new ServerMain();
+		//DBConnect db = new DBConnect();
+
+		ServerMain main = new ServerMain();
 	}
 	
 	public ServerMain() {
@@ -73,6 +75,35 @@ public class ServerMain extends JFrame {
 	
 	// 회원 관리
 	public void memberPanel(JPanel p) {
+		String data[][] = {
+				{"101", "사원", "1500000"},
+				{"102", "대리", "2000000"},
+				{"103", "과장", "2500000"}
+		};
+		
+		String column[] = {"번호", "직책", "월급"};	// 열 이름
+		
+		JTable table = new JTable(data, column);
+		table.setCellSelectionEnabled(true);
+		ListSelectionModel select = table.getSelectionModel();	// 리스트 모델
+		select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	// 하나의 셀만 선택
+		
+		select.addListSelectionListener(new ListSelectionListener() {	// 리스너 붙이기
+			public void valueChanged(ListSelectionEvent e) {
+				String Data = null;
+				int[] row = table.getSelectedRows();
+				int[] columns = table.getSelectedColumns();
+				
+				for(int i = 0; i < row.length; i++) {	// 데이터 삽입
+					for(int j = 0; j < columns.length; j++) {
+						Data = (String)table.getValueAt(row[i], columns[j]);
+					}
+				}
+				// 선택 결과 보이기
+				JOptionPane.showMessageDialog(p, "선택된 테이블은 " + Data + " 입니다.");
+			}
+		});
+		JScrollPane scroll = new JScrollPane(table);	// 스크롤 바 붙이기
 		
 	}
 	
