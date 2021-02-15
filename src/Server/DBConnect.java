@@ -13,6 +13,7 @@ public class DBConnect extends JFrame {
 	private JPasswordField pwText;
 	private JTextField idText, ipAddrText, portNumText, dbNameText;
 	Connection conn = null;	// connection 객체
+	int flag = 0;	// DB 연결 성공 여부 체크(0: 실패, 1: 성공)
 	
 	public DBConnect() {
 		//******** setting
@@ -40,7 +41,6 @@ public class DBConnect extends JFrame {
 	
 	public void dbConnectPanel(JPanel p) {
 		p.setLayout(null);	// 배치관리자 없이 직접 배치
-		
 		
 		// Label
 		JLabel idLabel = new JLabel("아이디");
@@ -90,8 +90,20 @@ public class DBConnect extends JFrame {
 		p.add(btnConnect);
 		btnConnect.addActionListener(event -> {
 			conn = DBConnecting();
+
+			if(flag == 1) {	// DB연결에 성공한 경우
+				setVisible(false);	// DB연결 창 가리기
+				// 메인창 띄우기
+				ServerMain main = new ServerMain(conn);
+			}
+
 			//SQLExecute s = new SQLExecute(conn);
 		});
+		
+		// test용 코드(DB연결 창 없이 바로 연결)
+		conn = DBConnectingTest();
+		setVisible(false);	// DB연결 창 가리기
+		ServerMain main = new ServerMain(conn);
 		
 		// 디폴트 값
 		idText.setText("root");
@@ -99,6 +111,31 @@ public class DBConnect extends JFrame {
 		ipAddrText.setText("localhost");
 		portNumText.setText("3306");
 		dbNameText.setText("pcroom_db");
+	}
+	// test용 코드
+	public Connection DBConnectingTest() {
+		Connection con = null;	// DB와 연결을 위한 객체
+		String pwStr = new String(pwText.getPassword());	// getPassword()를 통해 얻은 값은 char[] 형태이므로 String으로 변환
+		
+		try {
+			// 1) DB 접속주소
+			String DB_URL = "jdbc:mysql://localhost:3306/pcroom_db?useSSL=false";
+			
+			// 2) JDBC 드라이버 로딩
+			Class.forName(JDBC_DRIVER);
+			
+			// 3) MySQL 서버 연결(connection 객체 생성)
+			con = DriverManager.getConnection(DB_URL, "root", "");
+			System.out.println("DB 연결 성공!");
+			
+		} catch (ClassNotFoundException e){
+			System.out.println("JDBC 드라이버 오류!");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("DB 연결 오류!");
+			e.printStackTrace();
+		}
+		return con;
 	}
 	
 	public Connection DBConnecting() {
@@ -115,12 +152,15 @@ public class DBConnect extends JFrame {
 			
 			// 3) MySQL 서버 연결(connection 객체 생성)
 			con = DriverManager.getConnection(DB_URL, idText.getText(), pwStr);
+			flag = 1;
 			System.out.println("DB 연결 성공!");
 			
 		} catch (ClassNotFoundException e){
 			System.out.println("JDBC 드라이버 오류!");
+			e.printStackTrace();
 		} catch (SQLException e) {
 			System.out.println("DB 연결 오류!");
+			e.printStackTrace();
 		}
 		return con;
 	}
