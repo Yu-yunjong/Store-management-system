@@ -16,20 +16,6 @@ public class DBConnect extends JFrame {
 	int flag = 0;	// DB 연결 성공 여부 체크(0: 실패, 1: 성공)
 	
 	public DBConnect() {
-		//******** setting
-		// 창 이름
-		super("DB 연결");		// setTitle("DB 연결");
-		// 창 크기(너비, 높이)
-		setSize(300, 400);
-		// 창 보이기
-		setVisible(true);
-		// 창이 뜰 위치 결정(가로, 세로)
-		setLocation(500, 300);
-		// 창 크기 고정
-		setResizable(false);
-		// 종료 이벤트(종료 시 메모리에서도 사라지도록)
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
 		// panel
 		JPanel panel = new JPanel();
 		dbConnectPanel(panel);
@@ -37,6 +23,19 @@ public class DBConnect extends JFrame {
 		// add
 		add(panel);
 		
+		//******** setting
+		// 창 이름
+		 setTitle("DB 연결");		//super("DB 연결");
+		// 창 크기(너비, 높이)
+		setSize(300, 400);
+		// 창 보이기
+		//setVisible(true);
+		// 창이 뜰 위치 결정(가로, 세로)
+		setLocation(500, 300);
+		// 창 크기 고정
+		setResizable(false);
+		// 종료 이벤트(종료 시 메모리에서도 사라지도록)
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	public void dbConnectPanel(JPanel p) {
@@ -125,7 +124,7 @@ public class DBConnect extends JFrame {
 			Class.forName(JDBC_DRIVER);
 			
 			// 3) MySQL 서버 연결(connection 객체 생성)
-			con = DriverManager.getConnection(DB_URL, "root", "");
+			con = DriverManager.getConnection(DB_URL, "root", "toor");
 			System.out.println("DB 연결 성공!");
 			
 		} catch (ClassNotFoundException e){
