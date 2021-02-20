@@ -1,11 +1,6 @@
 package Server;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
 
 
@@ -70,7 +65,7 @@ public class ServerMain {
 		// 창 이름
 		//super("PC방 관리 프로그램(서버)");
 		// 창 크기(너비, 높이)
-		f.setSize(1500, 1000);
+		f.setSize(1200, 800);
 		// 창 보이기
 		f.setVisible(true);
 		// 창이 뜰 위치 결정(가로, 세로)
@@ -102,7 +97,7 @@ public class ServerMain {
 		int rowCount = comm.rowsCount(rs);
 		MemberLoad ml = new MemberLoad(rs, p, rowCount);
 		
-//		 //사용순서와 반대로 close
+		 //사용순서와 반대로 close (테스트중)
 //		if(rs != null) {
 //			try {
 //				rs.close();
@@ -110,13 +105,17 @@ public class ServerMain {
 //				e1.printStackTrace();
 //			}
 //		}
-		
+//		
+//			if(sql.st != null) {
+//			try {
+//				sql.st.close();
+//			} catch(SQLException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
 		btn.btnMember(con, p);
 		
 		
-
-
-
 	}
 	
 	// 매출 관리

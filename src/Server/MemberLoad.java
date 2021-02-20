@@ -1,16 +1,16 @@
 package Server;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -41,26 +41,6 @@ public class MemberLoad {
 		
 		DefaultTableModel model = new DefaultTableModel(data, column);
 		JTable table = new JTable(model);
-		//JTable table = new JTable(data, column);
-		table.setCellSelectionEnabled(true);	// 선택한 셀이 파랗게 표기
-		ListSelectionModel select = table.getSelectionModel();	// 리스트 모델
-		select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	// 하나의 셀만 선택
-		
-		select.addListSelectionListener(new ListSelectionListener() {	// 리스너 붙이기
-			public void valueChanged(ListSelectionEvent e) {
-				String Data = null;
-				int[] row = table.getSelectedRows();
-				int[] columns = table.getSelectedColumns();
-				
-				for(int i = 0; i < row.length; i++) {	// 데이터 삽입
-					for(int j = 0; j < columns.length; j++) {
-						Data = (String)table.getValueAt(row[i], columns[j]);
-					}
-				}
-				// 선택 결과 보이기
-				JOptionPane.showMessageDialog(p, "선택된 테이블은 " + Data + " 입니다.");
-			}
-		});
 		
 		// 셀 간격 조정
 		DefaultTableCellRenderer celAlignCenter = new DefaultTableCellRenderer();
@@ -77,5 +57,38 @@ public class MemberLoad {
 		//sp.setPreferredSize(new Dimension(1000, 500));	// 크기 설정(안쓰는게 좋을듯)
 
 		p.add(sp);
+		
+		// table 끝 ===========================================================================
+	}
+	
+	public void memberSearch(JPanel p) {
+		/**********
+		 * 회원 검색 *
+		 **********/
+		// Label
+		JLabel memberSearchLabel = new JLabel("< 회원 검색 >");
+		memberSearchLabel.setBounds(10, 510, 80, 25);
+		p.add(memberSearchLabel);
+		
+		// ComboBox
+		String [] select = {"아이디", "이름", "휴대폰", "이메일"};
+		JComboBox combo = new JComboBox(select);
+
+		combo.setBounds(10, 530, 100, 25);
+		p.add(combo);
+		
+		combo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JComboBox comboBox = (JComboBox)e.getSource();
+				int index = comboBox.getSelectedIndex();
+				System.out.println(index);
+			}
+		});
+		
+		// TextField
+		JTextField searchText = new JTextField(20);
+		searchText.setBounds(120, 530, 150, 25);
+		p.add(searchText);
 	}
 }

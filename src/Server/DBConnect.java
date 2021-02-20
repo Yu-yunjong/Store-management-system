@@ -3,8 +3,6 @@ package Server;
 import javax.swing.*;
 import java.sql.*;
 
-
-@SuppressWarnings("serial")
 public class DBConnect extends JFrame {
 	// JDBC 드라이버
 	private final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
