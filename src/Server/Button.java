@@ -10,29 +10,26 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Button {
-	public void btnMember(Connection con, JPanel p) {
+	public void btnMember(Connection con, JPanel p, MemberLoad ml, SQLExecute sql) {
+
 		
 		/************
 		 * 회원관리 탭  *
 		 ************/
-		// 선언 및 배치
+		// 배치
 		JButton btnInquiry = new JButton("조회(새로고침)");
 		btnInquiry.setBounds(1025, 10, 150, 25);
 		JButton btnPwReset = new JButton("비밀번호 초기화");
 		btnPwReset.setBounds(1025, 40, 150, 25);
-		JButton btnUsrInfoChange = new JButton("회원정보 변경");
-		btnUsrInfoChange.setBounds(1025, 70, 150, 25);
 		
 		// 구현부
 		btnInquiry.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Common comm = new Common();	// 공통
 				SQLExecute sql = new SQLExecute();
 				ResultSet rs = sql.memberSelectSQL(con);
 				
-				int rowCount = comm.rowsCount(rs);
-				MemberLoad ml = new MemberLoad(rs, p, rowCount);
+				ml.memberLoad(sql, p, con, "조회");
 				
 				 //사용순서와 반대로 close
 				if(rs != null) {
@@ -42,15 +39,13 @@ public class Button {
 						e1.printStackTrace();
 					}
 				}
+				ml.setCheck_btnMemberInfoChange(0);// 회원정보 수정 버튼 동작하지 않도록 변경.
 			}
 		});
 		
 		btnPwReset.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				SQLExecute sql = new SQLExecute();
-
-				
+			public void actionPerformed(ActionEvent e) {	
 				String q1 = "비밀번호 초기화를 진행할 사용자 ID를 입력해주세요.\n(비밀번호는 등록된 생년월일 6자리로 초기화됩니다.)\n초기화된 비밀번호 예시: 980101";
 				String id = JOptionPane.showInputDialog(q1);
 				String birthday = sql.memberBirthday(con, id);
@@ -75,17 +70,8 @@ public class Button {
 			}
 		});
 		
-		btnUsrInfoChange.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				
-			}
-		});
-		
 		// 삽입
 		p.add(btnInquiry);
 		p.add(btnPwReset);
-		p.add(btnUsrInfoChange);
 	}
 }

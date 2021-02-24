@@ -89,13 +89,15 @@ public class ServerMain {
 	
 	// 회원 관리
 	public void memberPanel(JPanel p, Connection con) {
-		Common comm = new Common();
+		p.setLayout(null);	// 배치관리자 없이
 		Button btn = new Button();
 		SQLExecute sql = new SQLExecute();
 		ResultSet rs = sql.memberSelectSQL(con);
 		
-		int rowCount = comm.rowsCount(rs);
-		MemberLoad ml = new MemberLoad(rs, p, rowCount);
+		MemberLoad ml = new MemberLoad(sql, p, con);
+		ml.memberLoad(sql, p, con, "조회");
+		ml.memberSearch(p, con, sql);
+		ml.memberInfoChange(p, con);
 		
 		 //사용순서와 반대로 close (테스트중)
 //		if(rs != null) {
@@ -113,7 +115,8 @@ public class ServerMain {
 //				e1.printStackTrace();
 //			}
 //		}
-		btn.btnMember(con, p);
+		btn.btnMember(con, p, ml, sql);
+		
 		
 		
 	}
