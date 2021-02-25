@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -275,6 +277,7 @@ MemberLoad(SQLExecute sql, JPanel p, Connection con){
 		btnUsrInfoChange.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Date birthday = null;
 				if(check_btnMemberInfoChange == 0) {
 					JOptionPane.showMessageDialog(null, "상단 테이블에서 변경할 회원을 선택해주세요.", "회원정보 수정", JOptionPane.ERROR_MESSAGE);
 				}
@@ -283,21 +286,71 @@ MemberLoad(SQLExecute sql, JPanel p, Connection con){
 					String email = memberChangeTable.getValueAt(0, 2).toString();
 					// 생일을 String -> Date 형식으로 캐스팅
 					String sBirthday = memberChangeTable.getValueAt(0, 1).toString();
-					Date birthday = Date.valueOf(sBirthday);
+					boolean chk_birthday;
+					try {
+						SimpleDateFormat  dateFormat = new  SimpleDateFormat("yyyy-MM-dd");// date형식으로 들어왔는지 유효성 검사를 위한 것
+						dateFormat.setLenient(false);	// 날짜가 파싱될 때 조건을 허술하게 할지 말지 설정? ==> false: 엄격하게
+						dateFormat.parse(sBirthday);
+						chk_birthday = true;
+					} catch(ParseException e1) {
+						chk_birthday = false;
+					}
 					
-					String id = memberChangeInfoTable.getValueAt(0, 0).toString();
-					String message = "회원정보를 다음과 같이 변경하시겠습니까?\n< 기존 >\n  - 휴대폰: " + table.getValueAt(table.getSelectedRow(), 2)
-									+ "\n  - 생년월일: " + table.getValueAt(table.getSelectedRow(), 3)
-									+ "\n  - 이메일: " + table.getValueAt(table.getSelectedRow(), 4)
-									+ "\n\n< 변경 >"
-									+ "\n  - 휴대폰: " + phone
-									+ "\n  - 생년월일: " + birthday
-									+ "\n  - 이메일: " + email;
-					// result - 0: 예 / 1: 아니오 / -1: x버튼으로 닫기
-					int result = JOptionPane.showConfirmDialog(null, message, "회원정보 변경", JOptionPane.YES_NO_OPTION);
-					if(result == 0) {
-						sql.memberInfoChange(con, id, phone, birthday, email);
-						JOptionPane.showMessageDialog(null, "회원정보 변경 완료!", "회원정보 변경", 1);
+					if(chk_birthday == false) {
+						JOptionPane.showMessageDialog(null, "잘못된 값을 입력하였습니다. 날짜 형식(yyyy-mm-dd)에 맞춰 입력해주세요.", "회원정보 수정", JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						birthday = Date.valueOf(sBirthday);
+						String id = memberChangeInfoTable.getValueAt(0, 0).toString();
+						String message = "회원정보를 다음과 같이 변경하시겠습니까?\n(변경사항이 있는 항목만 표기됩니다.)\n< 기존 >\n";
+						String message1 = "";// 변경된 회원정보 저장
+						int chkValue = 0;	// 변경될 값이 있는지 확인
+						
+						// 휴대폰 정보가 [변경 전]과 [변경 후]가 같지 않을 경우(변경된 경우)
+						if(phone.length() > 13) {	// 휴대폰 번호가 13자리보다 클 경우
+							JOptionPane.showMessageDialog(null, "휴대폰 번호가 잘못 입력되었습니다. (13자 초과)", "회원정보 수정", JOptionPane.ERROR_MESSAGE);
+						}
+						else if(!table.getValueAt(table.getSelectedRow(), 2).toString().equals(phone)) {
+							message = message + "  - 휴대폰: " + table.getValueAt(table.getSelectedRow(), 2);
+							message1 = message1 + "\n  - 휴대폰: " + phone;
+							chkValue++;
+						}
+						
+						// 생년월일 정보가 [변경 전]과 [변경 후]가 같지 않을 경우
+						if(!table.getValueAt(table.getSelectedRow(), 3).toString().equals(sBirthday)) {
+							message = message + "\n  - 생년월일: " + table.getValueAt(table.getSelectedRow(), 3);
+							message1 = message1 + "\n  - 생년월일: " + birthday;
+							chkValue++;
+						}
+						
+						// 이메일 정보가 [변경 전]과 [변경 후]가 같지 않을 경우
+						if(!table.getValueAt(table.getSelectedRow(), 4).toString().equals(email)) {
+							message = message + "\n  - 이메일: " + table.getValueAt(table.getSelectedRow(), 4);
+							message1 = message1 + "\n  - 이메일: " + email;
+							chkValue++;
+						}
+						message = message + "\n\n< 변경 >";
+						message = message + message1;
+						// result - 0: 예 / 1: 아니오 / -1: x버튼으로 닫기
+
+						if(chkValue == 0) {
+							JOptionPane.showMessageDialog(null, "[변경할 값]이 [기존 값]과 동일합니다. 값을 변경해주세요.", "회원정보 수정", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							int result = JOptionPane.showConfirmDialog(null, message, "회원정보 변경", JOptionPane.YES_NO_OPTION);
+							if(result == 0) {
+								int chk = sql.memberInfoChange(con, id, phone, birthday, email);
+								if(chk == 1) {// 1개 행의 값이 변경(update)되었으면
+									JOptionPane.showMessageDialog(null, "회원정보 변경 완료!", "회원정보 변경", 1);
+									memberLoad(sql, p, con, "조회");// 상단 테이블 다시 로드
+									setCheck_btnMemberInfoChange(0);// 회원정보 수정 버튼 눌리지 않도록 변경
+								}
+								else {
+									JOptionPane.showMessageDialog(null, "SQL 처리 중 오류 발생! 콘솔창을 확인해주세요.", "회원정보 수정", JOptionPane.ERROR_MESSAGE);
+								}
+
+							}
+						}
 					}
 				}
 			}
