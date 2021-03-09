@@ -27,7 +27,7 @@ public class ServerMain {
 		
 		// 상품 관리 패널
 		JPanel panel2 = new JPanel();
-		//productPanel(panel2);
+		productPanel(panel2, con);
 		
 		// 회원 관리 패널
 		JPanel panel3 = new JPanel();
@@ -83,7 +83,11 @@ public class ServerMain {
 	}
 	
 	// 상품 관리
-	public void productPanel(JPanel p) {
+	public void productPanel(JPanel p, Connection con) {
+		p.setLayout(null);	// 배치관리자 없이
+		SQLExecute sql = new SQLExecute();
+		Product product = new Product(con, p, sql);
+		//product.productTableLoad(sql, p, con, "조회");
 		
 	}
 	

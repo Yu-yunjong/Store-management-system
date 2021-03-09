@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class SQLExecute {
@@ -62,7 +63,6 @@ public class SQLExecute {
 
 		}
 		return rs;
-
 	}
 	
 	// 비밀번호 초기화
@@ -260,6 +260,213 @@ public class SQLExecute {
 			}
 		}
 		return returnValue;
+	}
+	
+	// 상품 전체 출력
+	public DBManager productSelectSQL(Connection con) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT * FROM 상품 ORDER BY 분류";
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("상품 전체 SQL 실행 중 오류!");
+			e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 상품 유통기한 있는 제품만, 유통기한 순으로 정렬후 출력
+	public DBManager productSelectExpSQL(Connection con) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT * FROM 상품 WHERE 유통기한 IS NOT NULL ORDER BY 유통기한";
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("유통기한 있는 상품 조회 SQL 실행 중 오류!");
+			e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 상품 수량이 9999(무제한)아닌 제품을 낮은 수량순으로 조회
+	public DBManager productAmountSelectSQL(Connection con) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT * FROM 상품 WHERE 수량 != 9999 ORDER BY 수량";
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("낮은 수량순 상품 조회 SQL 실행 중 오류!");
+			e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 상품 정보 수정
+	public int productInfoChange(Connection con, String productName, int amount, int price, Date exp, String productID) {
+		PreparedStatement pst = null;	// SQL문을 DB 서버로 보내기 위한 객체
+		ResultSet rs = null;	// SQL 질의에 의해 생성된 테이블을 저장하는 객체
+		int returnValue = 0;
+		
+		String SQL = "UPDATE 상품 SET 상품명 = ?, 수량 = ?, 단가 = ?, 유통기한 = ? WHERE 상품코드 = ?";
+		
+		try {
+			// 1) PreparedStatement 객체 생성, SQL 추가
+			pst = con.prepareStatement(SQL);
+			
+			// 2) ? 매개변수에 값 지정
+			pst.setString(1, productName);
+			pst.setInt(2, amount);
+			pst.setInt(3, price);
+			pst.setDate(4, (java.sql.Date) exp);	// 날짜 형식에 맞게 캐스팅 필요
+			pst.setString(5, productID);
+			
+			returnValue = pst.executeUpdate();
 
+		} catch(Exception e) {
+			System.out.println("상품 정보 수정 SQL 실행 중 오류!");
+			e.printStackTrace();
+		} finally {
+			// 사용순서와 반대로 close
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			if(pst != null) {
+				try {
+					pst.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return returnValue;
+	}
+	
+	// 상품 삭제
+	public int productDeleteSQL(Connection con, String productID) {
+		PreparedStatement pst = null;	// SQL문을 DB 서버로 보내기 위한 객체
+		ResultSet rs = null;	// SQL 질의에 의해 생성된 테이블을 저장하는 객체
+		int returnValue = 0;
+		
+		String SQL = "DELETE FROM 상품 WHERE 상품코드 = ?";
+		
+		try {
+			// 1) PreparedStatement 객체 생성, SQL 추가
+			pst = con.prepareStatement(SQL);
+			
+			// 2) ? 매개변수에 값 지정
+			pst.setString(1, productID);
+			
+			returnValue = pst.executeUpdate();
+
+		} catch(Exception e) {
+			System.out.println("상품 삭제 SQL 실행 중 오류!");
+			e.printStackTrace();
+		} finally {
+			// 사용순서와 반대로 close
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			if(pst != null) {
+				try {
+					pst.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return returnValue;
+	}
+	
+	// (상품 삭제를 위한)상품 검색
+	public DBManager productSelectSQL(Connection con, String productID) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT * FROM 상품 WHERE 상품코드 = '" + productID + "'";
+		
+		try {
+			// 1) Statement 객체 생성
+			db.st = con.createStatement();
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("(상품 삭제를 위한)상품 검색 SQL 실행 중 오류!");
+			//e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 상품 추가
+	public int productAddSQL(Connection con, String pGroup, String pID, String pName, int pAmount, int pPrice, Date pExp) {
+		PreparedStatement pst = null;	// SQL문을 DB 서버로 보내기 위한 객체
+		ResultSet rs = null;	// SQL 질의에 의해 생성된 테이블을 저장하는 객체
+		int returnValue = 0;
+		
+		String SQL = "INSERT INTO 상품 VALUES(?, ?, ?, ?, ?, ?)";
+		
+		try {
+			// 1) PreparedStatement 객체 생성, SQL 추가
+			pst = con.prepareStatement(SQL);
+			
+			// 2) ? 매개변수에 값 지정
+			pst.setString(1, pGroup);
+			pst.setString(2, pID);
+			pst.setString(3, pName);
+			pst.setInt(4, pAmount);
+			pst.setInt(5, pPrice);
+			pst.setDate(6, (java.sql.Date) pExp);
+			
+			returnValue = pst.executeUpdate();
+
+		} catch(Exception e) {
+			System.out.println("상품 추가 SQL 실행 중 오류!");
+			e.printStackTrace();
+		} finally {
+			// 사용순서와 반대로 close
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			if(pst != null) {
+				try {
+					pst.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return returnValue;
 	}
 }

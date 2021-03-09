@@ -288,11 +288,12 @@ MemberLoad(SQLExecute sql, JPanel p, Connection con){
 					String sBirthday = memberChangeTable.getValueAt(0, 1).toString();
 					boolean chk_birthday;
 					try {
-						SimpleDateFormat  dateFormat = new  SimpleDateFormat("yyyy-MM-dd");// date형식으로 들어왔는지 유효성 검사를 위한 것
+						//System.out.println(sBirthday.length());
+						SimpleDateFormat dateFormat = new  SimpleDateFormat("yyyy-MM-dd");// date형식으로 들어왔는지 유효성 검사를 위한 것
 						dateFormat.setLenient(false);	// 날짜가 파싱될 때 조건을 허술하게 할지 말지 설정? ==> false: 엄격하게
 						dateFormat.parse(sBirthday);
 						chk_birthday = true;
-					} catch(ParseException e1) {
+					} catch(Throwable e1) {
 						chk_birthday = false;
 					}
 					
@@ -348,7 +349,6 @@ MemberLoad(SQLExecute sql, JPanel p, Connection con){
 								else {
 									JOptionPane.showMessageDialog(null, "SQL 처리 중 오류 발생! 콘솔창을 확인해주세요.", "회원정보 수정", JOptionPane.ERROR_MESSAGE);
 								}
-
 							}
 						}
 					}
