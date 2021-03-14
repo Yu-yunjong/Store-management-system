@@ -23,7 +23,7 @@ public class ServerMain {
 		// 1: 메인, 2: 상품 관리, 3: 회원 관리, 4: 매출 관리, 5: PC 상태
 		// 메인 패널
 		JPanel panel1 = new JPanel();
-		//mainPanel(panel1);
+		mainPanel(panel1, con);
 		
 		// 상품 관리 패널
 		JPanel panel2 = new JPanel();
@@ -78,8 +78,10 @@ public class ServerMain {
 		f.setLocationRelativeTo(null);
 	}
 	// 메인
-	public void mainPanel(JPanel p) {
-		
+	public void mainPanel(JPanel p, Connection con) {
+		p.setLayout(null);	// 배치관리자 없이
+		SQLExecute sql = new SQLExecute();
+		MainPanel main = new MainPanel(con, p, sql);
 	}
 	
 	// 상품 관리

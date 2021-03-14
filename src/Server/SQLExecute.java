@@ -300,11 +300,11 @@ public class SQLExecute {
 		return db;
 	}
 	
-	// 상품 수량이 9999(무제한)아닌 제품을 낮은 수량순으로 조회
+	// 이용권이 아닌 제품을 낮은 수량순으로 조회
 	public DBManager productAmountSelectSQL(Connection con) {
 		DBManager db = new DBManager();
 		
-		String SQL = "SELECT * FROM 상품 WHERE 수량 != 9999 ORDER BY 수량";
+		String SQL = "SELECT * FROM 상품 WHERE 분류 != '이용권' ORDER BY 수량";
 		
 		try {
 			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
@@ -446,6 +446,8 @@ public class SQLExecute {
 			
 			returnValue = pst.executeUpdate();
 
+		} catch(java.sql.SQLIntegrityConstraintViolationException e1) {
+			JOptionPane.showMessageDialog(null, "이미 존재하는 상품코드입니다!", "상품 추가", JOptionPane.ERROR_MESSAGE);
 		} catch(Exception e) {
 			System.out.println("상품 추가 SQL 실행 중 오류!");
 			e.printStackTrace();
@@ -468,5 +470,86 @@ public class SQLExecute {
 			}
 		}
 		return returnValue;
+	}
+	
+	// 주문 Select SQL
+	public DBManager orderSelectSQL(Connection con) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문, pc상태, 상품 WHERE 주문.회원아이디 = pc상태.사용자ID AND 주문.상품코드 = 상품.상품코드 ORDER BY 주문시간";
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("주문 Select SQL 실행 중 오류!");
+			//e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 주문 상태 변경
+	public int orderStateChange(Connection con, int payment, String processing, String orderNum) {
+		PreparedStatement pst = null;	// SQL문을 DB 서버로 보내기 위한 객체
+		ResultSet rs = null;	// SQL 질의에 의해 생성된 테이블을 저장하는 객체
+		int returnValue = 0;
+		
+		String SQL = "UPDATE 주문 SET 결제방식 = ?, 처리현황 = ? WHERE 주문번호 = ?";
+		
+		try {
+			// 1) PreparedStatement 객체 생성, SQL 추가
+			pst = con.prepareStatement(SQL);
+			
+			// 2) ? 매개변수에 값 지정
+			pst.setInt(1, payment);
+			pst.setString(2, processing);
+			pst.setString(3, orderNum);
+			
+			returnValue = pst.executeUpdate();
+
+		} catch(Exception e) {
+			System.out.println("주문 상태 변경 SQL 실행 중 오류!");
+			e.printStackTrace();
+		} finally {
+			// 사용순서와 반대로 close
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			if(pst != null) {
+				try {
+					pst.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return returnValue;
+	}
+	
+	// 주문 Select_월별 검색 SQL
+	public DBManager orderSelectMonthSQL(Connection con, String year, String month) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문, pc상태, 상품 WHERE 주문.회원아이디 = pc상태.사용자ID AND 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + year + "-" + month + "-%' ORDER BY 주문시간";
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("주문 Select_월별 검색 SQL 실행 중 오류!");
+			//e.printStackTrace();
+		}
+		return db;
 	}
 }

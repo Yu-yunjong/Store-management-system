@@ -190,7 +190,7 @@ public class Product {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			closeDB(db);
+			comm.closeDB(db);
 			if(rs != null) {
 				try {
 					rs.close();
@@ -533,14 +533,9 @@ public class Product {
 					} catch(java.lang.NumberFormatException e1) {
 						JOptionPane.showMessageDialog(null, "\'수량\'과 \'단가\'에는 숫자만 입력 가능합니다.", "상품 추가", JOptionPane.ERROR_MESSAGE);
 					} 
-//					catch(java.sql.SQLIntegrityConstraintViolationException e1) {
-//						//JOptionPane.showMessageDialog(null, "이미 존재하는 상품코드입니다!", "상품 추가", JOptionPane.ERROR_MESSAGE);
-//					}
+
 
 				}
-
-
-
 			}
 		});
 		p.add(btnProductInfoChange);
@@ -589,7 +584,7 @@ public class Product {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(null, "존재하지 않는 상품입니다.\n상품코드를 확인후 다시 시도하세요.\n- 선택한 상품코드: " + productID, "상품 삭제", JOptionPane.ERROR_MESSAGE);
 					} finally {
-						closeDB(db);
+						comm.closeDB(db);
 						if(rs != null) {
 							try {
 								rs.close();
@@ -625,24 +620,5 @@ public class Product {
 			}
 		});
 		p.add(btnProductDelete);
-	}
-	
-	// close
-	private void closeDB(DBManager db) {
-		if(db.rs != null) {
-			try {
-				db.rs.close();
-			} catch(SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-		
-		if(db.st != null) {
-			try {
-				db.st.close();
-			} catch(SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
 	}
 }

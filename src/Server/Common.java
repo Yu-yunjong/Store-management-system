@@ -18,4 +18,23 @@ public class Common {
 		}
 		return rowCount;
 	}
+	
+	// close
+	public void closeDB(DBManager db) {
+		if(db.rs != null) {
+			try {
+				db.rs.close();
+			} catch(SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		if(db.st != null) {
+			try {
+				db.st.close();
+			} catch(SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
 }
