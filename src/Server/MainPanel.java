@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.*;
@@ -61,7 +60,12 @@ public class MainPanel {
 		table.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				seatNumLabel1.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+				try {
+					seatNumLabel1.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+				} catch(java.lang.NullPointerException e1) {
+					// 좌석번호가 null일 때
+					seatNumLabel1.setText("(null)");
+				}
 				productNameLabel1.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
 				orderAmountLabel1.setText(table.getValueAt(table.getSelectedRow(), 5).toString());
 				orderPriceLabel1.setText(table.getValueAt(table.getSelectedRow(), 6).toString());
@@ -70,7 +74,8 @@ public class MainPanel {
 				try {
 					memoTextArea.setText(table.getValueAt(table.getSelectedRow(), 9).toString());
 				} catch(java.lang.NullPointerException e1) {
-					System.out.println("메모 칸이 null값임.");
+					// 메모가 null일 때
+					memoTextArea.setText("(null)");
 				}
 				setOrderNum(table.getValueAt(table.getSelectedRow(), 0).toString());
 				orderNumberLabel1.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
@@ -172,7 +177,7 @@ public class MainPanel {
 //		table.getColumn("단가").setPreferredWidth(7);
 //		table.getColumn("유통기한").setPreferredWidth(10);
 		
-		setCheck_btnOrderInfoChange(0);// 회원수정 버튼이 동작 불가하도록 변경
+		setCheck_btnOrderInfoChange(0);// 주문수정 버튼이 동작 불가하도록 변경
 	}
 	
 	private void orderLoad(JPanel p, SQLExecute sql, Connection con) {
@@ -313,7 +318,7 @@ public class MainPanel {
 		
 		// 월별 조회 기능
 		// ComboBox
-		int thisYear = Calendar.getInstance().get(Calendar.YEAR) + 3;	// 현재 연도보다 3년 후까지 표기
+		int thisYear = Calendar.getInstance().get(Calendar.YEAR);
 		String [] year = new String[thisYear - 2019];
 		int cnt = 0;	// index값
 		for(int i = 2020; i <= thisYear; i++) {

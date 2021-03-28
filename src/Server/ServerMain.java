@@ -11,11 +11,6 @@ public class ServerMain {
 	
 	public static void main(String[] args) {
 		DBConnect db = new DBConnect();
-		
-		
-	}
-	public ServerMain() {
-		
 	}
 	
 	public ServerMain(Connection con) {
@@ -38,18 +33,11 @@ public class ServerMain {
 		
 		// 매출 관리 패널
 		JPanel panel4 = new JPanel();
-		//salesPanel(panel4);
+		salesPanel(panel4, con);
 		
 		// PC상태 패널
 		JPanel panel5 = new JPanel();
 		//pcPanel(panel5);
-		
-		// add
-//		f.add(panel1);
-//		f.add(panel2);
-//		f.add(panel3);
-//		f.add(panel4);
-//		f.add(panel5);
 		
 		// Tab
 		JTabbedPane tab = new JTabbedPane();
@@ -98,7 +86,6 @@ public class ServerMain {
 		p.setLayout(null);	// 배치관리자 없이
 		Button btn = new Button();
 		SQLExecute sql = new SQLExecute();
-		ResultSet rs = sql.memberSelectSQL(con);
 		
 		MemberLoad ml = new MemberLoad(sql, p, con);
 		ml.memberLoad(sql, p, con, "조회");
@@ -128,13 +115,17 @@ public class ServerMain {
 	}
 	
 	// 매출 관리
-	public void salesPanel(JPanel p) {
-		
+	public void salesPanel(JPanel p, Connection con) {
+		p.setLayout(null);	// 배치관리자 없이
+		SQLExecute sql = new SQLExecute();
+		SalesPanel sp = new SalesPanel(con, p, sql);
 	}
 	
 	// PC 상태
 	public void pcPanel(JPanel p) {
-		
+		p.setLayout(null);	// 배치관리자 없이
+		SQLExecute sql = new SQLExecute();
+		PC_Status pcStat = new PC_Status();
 	}
 	
 

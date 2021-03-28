@@ -476,8 +476,8 @@ public class SQLExecute {
 	public DBManager orderSelectSQL(Connection con) {
 		DBManager db = new DBManager();
 		
-		String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문, pc상태, 상품 WHERE 주문.회원아이디 = pc상태.사용자ID AND 주문.상품코드 = 상품.상품코드 ORDER BY 주문시간";
-		
+		//String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문, pc상태, 상품 WHERE 주문.회원아이디 = pc상태.사용자ID AND 주문.상품코드 = 상품.상품코드 ORDER BY 주문시간";
+		String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문 LEFT OUTER JOIN pc상태 ON 주문.회원아이디 = pc상태.사용자ID, 상품 WHERE 주문.상품코드 = 상품.상품코드  ORDER BY 주문시간";
 		try {
 			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
 			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -538,7 +538,9 @@ public class SQLExecute {
 	public DBManager orderSelectMonthSQL(Connection con, String year, String month) {
 		DBManager db = new DBManager();
 		
-		String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문, pc상태, 상품 WHERE 주문.회원아이디 = pc상태.사용자ID AND 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + year + "-" + month + "-%' ORDER BY 주문시간";
+		//String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문, pc상태, 상품 WHERE 주문.회원아이디 = pc상태.사용자ID AND 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + year + "-" + month + "-%' ORDER BY 주문시간";
+		String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문 LEFT OUTER JOIN pc상태 ON 주문.회원아이디 = pc상태.사용자ID, 상품 WHERE 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + year + "-" + month + "-%' ORDER BY 주문시간";
+		//String SQL = "SELECT 주문번호, 주문시간, 회원아이디, pc상태.pc번호, 상품명, 주문수량, 금액, 결제방식, 처리현황, 주문.메모 FROM 주문 LEFT OUTER JOIN pc상태 ON 주문.회원아이디 = pc상태.사용자ID, 상품 WHERE 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '%' ORDER BY 주문시간";
 		
 		try {
 			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
@@ -548,6 +550,58 @@ public class SQLExecute {
 			db.rs = db.st.executeQuery(SQL);
 		} catch(Exception e) {
 			System.out.println("주문 Select_월별 검색 SQL 실행 중 오류!");
+			//e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 매출 관리- 월별 조회 SQL
+	public DBManager salesMonthSelectSQL(Connection con) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT DATE_FORMAT(주문시간,'%Y-%m') 주문일자, SUM(주문수량*금액) FROM 주문, 상품 WHERE 주문.상품코드 = 상품.상품코드 GROUP BY 주문일자 ORDER BY 주문시간";
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("매출 관리- 월별 조회 SQL 실행 중 오류!");
+			//e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// 매출 관리- 회원아이디별, 상품별, 결제방식별 조회 SQL
+	public DBManager salesSelectSQL(Connection con, String date, String 조건) {
+		DBManager db = new DBManager();
+		String SQL = null;
+		
+		switch(조건) {
+		case "회원아이디": 
+			SQL = "SELECT DATE_FORMAT(주문시간,'%Y-%m') 주문일자, 회원아이디, SUM(주문수량*금액) AS '총금액' FROM 주문, 상품 WHERE 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + date + "%' GROUP BY 회원아이디 ORDER BY 회원아이디";
+			break;
+		case "상품명":
+			SQL = "SELECT DATE_FORMAT(주문시간,'%Y-%m') 주문일자, 상품.상품명, SUM(주문수량*금액) AS '총금액' FROM 주문, 상품 WHERE 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + date + "%' GROUP BY 상품명 ORDER BY 상품명";
+			break;
+		case "결제방식": 
+			SQL = "SELECT DATE_FORMAT(주문시간,'%Y-%m') 주문일자, 결제방식, SUM(주문수량*금액) AS '총금액' FROM 주문, 상품 WHERE 주문.상품코드 = 상품.상품코드 AND 주문.주문시간 LIKE '" + date + "%' GROUP BY 결제방식 ORDER BY 결제방식";
+		break;
+		default:
+			System.out.println("salesSelectSQL 오류!!");
+			break;
+		}
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("매출 관리- 회원아이디별, 상품별, 결제방식별 조회 SQL 실행 중 오류!");
 			//e.printStackTrace();
 		}
 		return db;
