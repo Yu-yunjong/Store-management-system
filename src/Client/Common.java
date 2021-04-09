@@ -1,9 +1,9 @@
-package Server;
+package Client;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-class Common {
+public class Common {
 	// DB의 행 개수 계산(table 생성용)
 	static int rowsCount(ResultSet rs) {
 		int rowCount = 0;
