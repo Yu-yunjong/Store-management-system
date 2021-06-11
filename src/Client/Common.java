@@ -1,5 +1,7 @@
 package Client;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -36,5 +38,31 @@ public class Common {
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	// 비밀번호 암호화: sha256
+	// throws NoSuchAlgorithmException
+	public static String sha256(String pw) {
+	    MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+			md.update(pw.getBytes());
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("암호화 알고리즘 구동 실패!");
+			e.printStackTrace();
+		}
+		return byteToHexString(md.digest());
+	}
+	
+	public static String byteToHexString(byte[] data) {
+		StringBuilder sb = new StringBuilder();
+		for (byte b : data) {
+			sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+		}
+		return sb.toString();
+	}
+	// 테스트 암호화
+	public static void main(String[] args) {
+		System.out.print(sha256("yuna123"));
 	}
 }

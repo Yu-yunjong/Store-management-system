@@ -27,7 +27,7 @@ public class DBConnect extends JFrame {
 		// 창 크기(너비, 높이)
 		setSize(300, 400);
 		// 창 보이기
-		//setVisible(true);
+		setVisible(true);
 		// 창이 뜰 위치 결정(가로, 세로)
 		setLocation(500, 300);
 		// 창 크기 고정
@@ -97,10 +97,10 @@ public class DBConnect extends JFrame {
 			//SQLExecute s = new SQLExecute(conn);
 		});
 		
-		// test용 코드(DB연결 창 없이 바로 연결)
-		conn = DBConnectingTest();
-		setVisible(false);	// DB연결 창 가리기
-		ServerMain main = new ServerMain(conn);
+//		// test용 코드(DB연결 창 없이 바로 연결)
+//		conn = DBConnectingTest();
+//		setVisible(false);	// DB연결 창 가리기
+//		ServerMain main = new ServerMain(conn);
 		
 		// 디폴트 값
 		idText.setText("root");

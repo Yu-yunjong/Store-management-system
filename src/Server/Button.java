@@ -58,7 +58,7 @@ public class Button {
 						int result = JOptionPane.showConfirmDialog(null, q2, "비밀번호 초기화", JOptionPane.YES_NO_OPTION);
 						
 						if(result == 0) {
-							int chk = sql.memberPwResetSQL(con, id, birthday);
+							int chk = sql.memberPwResetSQL(con, id, Common.sha256(birthday));
 							if(chk == 1)	// 1행의 값이 변경되었으면
 								JOptionPane.showMessageDialog(null, "비밀번호 초기화 완료!");
 						}

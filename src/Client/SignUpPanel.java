@@ -178,9 +178,5 @@ public class SignUpPanel extends JFrame {
 			}
 		});
 		p.add(btnSignUp);
-		
-		
-
-
 	}
 }

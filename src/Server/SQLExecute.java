@@ -606,4 +606,65 @@ public class SQLExecute {
 		}
 		return db;
 	}
+	
+	public static DBManager selectPCStatus(Connection con) {
+		DBManager db = new DBManager();
+		
+		String SQL = "SELECT * FROM pc상태 ORDER BY PC번호*1;";	// 묵시적 캐스팅
+		
+		try {
+			// 1) Statement 객체 생성(열 개수 계산 시 에러 방지를 위한 파라미터 추가)
+			db.st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// 2) Test SQL 문장 실행 후 결과 리턴
+			db.rs = db.st.executeQuery(SQL);
+		} catch(Exception e) {
+			System.out.println("PC상태 - PC상태 조회 SQL 실행 중 오류!");
+			//e.printStackTrace();
+		}
+		return db;
+	}
+	
+	// pc상태 변경
+	public static int pcStateChange(Connection con, int pcState1, String memo, String pcNum) {
+		PreparedStatement pst = null;	// SQL문을 DB 서버로 보내기 위한 객체
+		ResultSet rs = null;	// SQL 질의에 의해 생성된 테이블을 저장하는 객체
+		int returnValue = 0;
+		
+		String SQL = "UPDATE pc상태 SET PC상태 = ?, 메모 = ? WHERE pc번호 = ?";
+		
+		try {
+			// 1) PreparedStatement 객체 생성, SQL 추가
+			pst = con.prepareStatement(SQL);
+			
+			// 2) ? 매개변수에 값 지정
+			pst.setInt(1, pcState1);
+			pst.setString(2, memo);
+			pst.setString(3, pcNum);
+			
+			returnValue = pst.executeUpdate();
+
+		} catch(Exception e) {
+			System.out.println("PC 상태 변경 SQL 실행 중 오류!");
+			e.printStackTrace();
+		} finally {
+			// 사용순서와 반대로 close
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			if(pst != null) {
+				try {
+					pst.close();
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return returnValue;
+	}
 }

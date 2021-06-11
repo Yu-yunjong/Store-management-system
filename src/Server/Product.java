@@ -198,8 +198,6 @@ public class Product {
 					e1.printStackTrace();
 				}
 			}
-			
-
 		}
 		setDataArray(data);	// 데이터를 setter을 이용하여 클래스단에 있는 dataArray 배열에 저장.
 

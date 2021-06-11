@@ -3,8 +3,6 @@ package Server;
 import javax.swing.*;
 import java.sql.*;
 
-
-
 public class ServerMain {
 	// frame
 	JFrame f = new JFrame("PC방 관리 프로그램(서버)");
@@ -37,7 +35,7 @@ public class ServerMain {
 		
 		// PC상태 패널
 		JPanel panel5 = new JPanel();
-		//pcPanel(panel5);
+		pcPanel(panel5, con);
 		
 		// Tab
 		JTabbedPane tab = new JTabbedPane();
@@ -77,7 +75,6 @@ public class ServerMain {
 		p.setLayout(null);	// 배치관리자 없이
 		SQLExecute sql = new SQLExecute();
 		Product product = new Product(con, p, sql);
-		//product.productTableLoad(sql, p, con, "조회");
 		
 	}
 	
@@ -109,9 +106,6 @@ public class ServerMain {
 //			}
 //		}
 		btn.btnMember(con, p, ml, sql);
-		
-		
-		
 	}
 	
 	// 매출 관리
@@ -122,15 +116,9 @@ public class ServerMain {
 	}
 	
 	// PC 상태
-	public void pcPanel(JPanel p) {
+	public void pcPanel(JPanel p, Connection con) {
 		p.setLayout(null);	// 배치관리자 없이
 		SQLExecute sql = new SQLExecute();
-		PC_Status pcStat = new PC_Status();
+		PC_Status pcStat = new PC_Status(con, p);
 	}
-	
-
-}
-
-class JPanel01 {
-
 }

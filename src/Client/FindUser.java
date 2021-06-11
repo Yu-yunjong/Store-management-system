@@ -144,17 +144,20 @@ public class FindUser extends JFrame {
 					System.out.println("비밀번호 찾기 실패.. " + nameText.getText() + "\t" + idText.getText() + "\t" + phoneOrEmailText.getText());
 				}
 				else {
-					String searchPW = null;
-					// ResultSet에 저장된 데이터 얻어오기
-					try {
-						while(db.rs.next()) {
-							searchPW = db.rs.getString("비밀번호");
+					String pw = JOptionPane.showInputDialog("변경할 비밀번호를 입력해 주세요.");
+
+					if(!(pw == null)) {	// null: 팝업창을 x눌러 닫은 경우
+						String pw1 = JOptionPane.showInputDialog("(비밀번호 확인)변경할 비밀번호를 다시 한번 입력해 주세요.");
+						
+						if(pw.equals(pw1)) {
+							pw = Common.sha256(pw);	// 비밀번호 암호화
+							int chk = SQLExecute.memberPwResetSQL(idText.getText(), pw);
+							if(chk == 1)	// 1행의 값이 변경되었으면
+								JOptionPane.showMessageDialog(null, "성공적으로 비밀번호를 변경하였습니다.", "비밀번호 변경 성공", JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(null, "[비밀번호]와 [비밀번호 확인]이 일치하지 않습니다.", "비밀번호 변경 오류", JOptionPane.ERROR_MESSAGE);
 						}
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					} 
-					JOptionPane.showMessageDialog(null, "<조회된 비밀번호>\n  " + searchPW, "비밀번호 찾기", JOptionPane.INFORMATION_MESSAGE);
-					System.out.println("성공적으로 비밀번호를 찾음! " + nameText.getText() + "\t" + idText.getText() + "\t" + phoneOrEmailText.getText() + "\t" + searchPW);
+					}
 				}
 				Common.closeDB(db);
 			}
